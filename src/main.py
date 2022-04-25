@@ -31,6 +31,57 @@ def setBlockPositions(snake, index, size, newx, newy):
     setBlockPositions(snake, index + 1, size, xold, yold)
 
 
+def menu(screen):
+    player = [Block() for i in range(INITIAL_NUMBER_OF_BLOCK)]
+    buttonColor = (255, 255, 0)
+    selectedButtonColor = (100, 100, 100)
+    direction = "NORTH"
+    selected = 0
+    smallfont = pygame.font.SysFont('Corbel', 35)
+    leave = smallfont.render('QUIT' , True , (255, 255, 255))
+    play = smallfont.render('PLAY' , True , (255, 255, 255))
+    # leave = smallfont.render('QUIT' , True , (0, 0, 0))
+    # play = smallfont.render('PLAY' , True , (0, 0, 0))
+
+    while 1:
+        idx = 0
+        screen.fill(BACKGROUND_COLOR)
+        # drawBackgroundGrid(screen)
+        mouse = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                return
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+
+            #if the mouse is clicked on the
+            # button the game is terminated
+                if SCREEN_SIZE[0]/2 <= mouse[0] <= SCREEN_SIZE[0]/2+140 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2+40:
+                    return #pygame.quit()
+                elif SCREEN_SIZE[0]/2 <= mouse[0] <= SCREEN_SIZE[0]/2+140 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
+                    game(screen)
+
+            elif event.type == KEYDOWN:
+                if event.key == K_UP:
+                    direction = "NORTH"
+                if event.key == K_DOWN:
+                    direction = "SOUTH"
+        #QUIT
+        if SCREEN_SIZE[0]/2 <= mouse[0] <= SCREEN_SIZE[0]/2+140 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2+40:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2,SCREEN_SIZE[1]/2,140,40])
+        else:
+            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2,140,40])
+        screen.blit(leave, (SCREEN_SIZE[0]/2+50, SCREEN_SIZE[1]/2))
+
+        #PLAY
+        if SCREEN_SIZE[0]/2 <= mouse[0] <= SCREEN_SIZE[0]/2+140 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2,SCREEN_SIZE[1]/2 - 100,140,40])
+        else:
+            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2,SCREEN_SIZE[1]/2 - 100,140,40])
+        screen.blit(play, (SCREEN_SIZE[0]/2+50, SCREEN_SIZE[1]/2 - 100))
+
+        pygame.display.flip()
+
+
 def game(screen):
     player = [Block() for i in range(INITIAL_NUMBER_OF_BLOCK)]
     snakeColor = (255,0,0)
@@ -69,7 +120,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption('CAU Snake')
-    game(screen)
+    menu(screen)
 
 
 if __name__ == '__main__': main()
