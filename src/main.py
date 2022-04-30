@@ -41,11 +41,13 @@ def menu(screen):
     leave = smallfont.render('QUIT' , True , (255, 255, 255))
     play = smallfont.render('PLAY' , True , (255, 255, 255))
     load = smallfont.render('LOAD' , True , (255, 255, 255))
+    bigfont = pygame.font.SysFont('Corbel', 80)
+    menu = bigfont.render('MENU' , True , (255, 255, 255))
 
     while 1:
         idx = 0
         screen.fill(BACKGROUND_COLOR)
-        #drawBackgroundGrid(screen)
+        drawBackgroundGrid(screen)
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -85,10 +87,13 @@ def menu(screen):
             pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2- 70,SCREEN_SIZE[1]/2,140,40])
         screen.blit(load, (SCREEN_SIZE[0]/2-30, SCREEN_SIZE[1]/2 + 10))
 
+        #MENU
+        screen.blit(menu, (SCREEN_SIZE[0]/2- 80, SCREEN_SIZE[1]/2 - 250))
+
         pygame.display.flip()
 
 
-def pause(screen):
+def pause(screen, player, apple):
     buttonColor = (0, 180, 0)
     selectedButtonColor = (100, 100, 100)
     selected = 0
@@ -96,11 +101,15 @@ def pause(screen):
     leave = smallfont.render('QUIT' , True , (255, 255, 255))
     resume = smallfont.render('RESUME' , True , (255, 255, 255))
     save = smallfont.render('SAVE' , True , (255, 255, 255))
+    bigfont = pygame.font.SysFont('Corbel', 80)
+    pause = bigfont.render('PAUSE' , True , (255, 255, 255))
+    snakeColor = (0,80,0)
+    appleColor = (80,0,0)
 
     while 1:
         idx = 0
         screen.fill(BACKGROUND_COLOR)
-        #drawBackgroundGrid(screen)
+        drawBackgroundGrid(screen)
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -113,6 +122,13 @@ def pause(screen):
                     sys.exit(0)
                 elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
                     return
+
+        # DRAW APPLE
+        pygame.draw.rect(screen, appleColor, pygame.Rect(apple.x, apple.y, STEP[0], STEP[1]))
+
+        # DRAW SNAKE
+        for i in player:
+            pygame.draw.rect(screen, snakeColor, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
 
         #QUIT
         if SCREEN_SIZE[0]/2- 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 + 100 <= mouse[1] <= SCREEN_SIZE[1]/2+140:
@@ -136,20 +152,27 @@ def pause(screen):
             pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2- 70,SCREEN_SIZE[1]/2,140,40])
         screen.blit(save, (SCREEN_SIZE[0]/2-30, SCREEN_SIZE[1]/2 + 10))
 
+        #PAUSE
+        screen.blit(pause, (SCREEN_SIZE[0]/2- 90, SCREEN_SIZE[1]/2 - 250))
+
         pygame.display.flip()
 
 
-def game_over(screen):
+def game_over(screen, score, player, apple):
     buttonColor = (0, 180, 0)
     selectedButtonColor = (100, 100, 100)
     selected = 0
     smallfont = pygame.font.SysFont('Corbel', 35)
     leave = smallfont.render('QUIT' , True , (255, 255, 255))
+    bigfont = pygame.font.SysFont('Corbel', 80)
+    score = bigfont.render('Score: ' + str(score) , True , (255, 255, 255))
+    snakeColor = (0,80,0)
+    appleColor = (80,0,0)
 
     while 1:
         idx = 0
         screen.fill(BACKGROUND_COLOR)
-        #drawBackgroundGrid(screen)
+        drawBackgroundGrid(screen)
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -158,15 +181,26 @@ def game_over(screen):
 
             #if the mouse is clicked on the
             # button the game is terminated
-                if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2+100 <= mouse[1] <= SCREEN_SIZE[1]/2+140:
+                if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2+40:
                     sys.exit(0)
 
+
+        # DRAW APPLE
+        pygame.draw.rect(screen, appleColor, pygame.Rect(apple.x, apple.y, STEP[0], STEP[1]))
+
+        # DRAW SNAKE
+        for i in player:
+            pygame.draw.rect(screen, snakeColor, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
+
         #QUIT
-        if SCREEN_SIZE[0]/2- 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 + 100 <= mouse[1] <= SCREEN_SIZE[1]/2+140:
-            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 +100, 140, 40])
+        if SCREEN_SIZE[0]/2- 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2+40:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2, 140, 40])
         else:
-            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2+100, 140, 40])
-        screen.blit(leave, (SCREEN_SIZE[0]/2- 30, SCREEN_SIZE[1]/2+110))
+            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2, 140, 40])
+        screen.blit(leave, (SCREEN_SIZE[0]/2- 30, SCREEN_SIZE[1]/2+10))
+
+        #SCORE
+        screen.blit(score, (SCREEN_SIZE[0]/2- 110, SCREEN_SIZE[1]/2 - 100))
 
         pygame.display.flip()
 
@@ -209,12 +243,11 @@ def game(screen):
                 if event.key == K_LEFT:
                     direction = "WEST" if direction != "EAST" else direction
                 if event.key == K_ESCAPE:
-                    pause(screen)
+                    pause(screen, player, apple)
 
 
         # DRAW APPLE
         pygame.draw.rect(screen, appleColor, pygame.Rect(apple.x, apple.y, STEP[0], STEP[1]))
-
 
         # DRAW SNAKE
         for i in player:
@@ -241,12 +274,12 @@ def game(screen):
 
         # Gestion game_over edge
         if (player[0].x < 0 or player[0].x > SCREEN_SIZE[0] or player[0].y < 0 or player[0].y > SCREEN_SIZE[1]):
-            game_over(screen)
+            game_over(screen, score, player, apple)
 
         # Gestion game_over snake
         for i in player[1:]:
             if (player[0].x == i.x and player[0].y == i.y):
-                game_over(screen)
+                game_over(screen, score, player, apple)
 
         pygame.time.wait(100)
 
