@@ -31,8 +31,37 @@ def setBlockPositions(snake, index, size, newx, newy):
     setBlockPositions(snake, index + 1, size, xold, yold)
 
 
+def saveFunc(player, apple, direction):
+    with open('save/apple.txt', 'w') as f:
+        f.write(str(apple.x) + "," + str(apple.y))
+
+    with open('save/player.txt', 'w') as f:
+        f.write(direction + "\n")
+        for i in player:
+            f.write(str(int(i.x)) + "," + str(int(i.y)))
+            if player.index(i) != len(player) - 1:
+                f.write("\n")
+
+def loadFunc():
+    apple = Block()
+    player = []
+    with open('save/apple.txt', 'r') as f:
+        buffer = f.read().split(',')
+        apple.x = int(buffer[0])
+        apple.y = int(buffer[1])
+
+    with open('save/player.txt', 'r') as f:
+        buffer = f.read().split('\n')
+        direction = buffer[0]
+        for i in buffer[1:]:
+            tmp = Block()
+            buff2 = i.split(',')
+            tmp.x = int(buff2[0])
+            tmp.y = int(buff2[1])
+            player.append(tmp)
+    return player, apple, direction
+
 def menu(screen):
-    player = [Block() for i in range(INITIAL_NUMBER_OF_BLOCK)]
     buttonColor = (0, 180, 0)
     selectedButtonColor = (100, 100, 100)
     direction = "NORTH"
@@ -59,7 +88,11 @@ def menu(screen):
                 if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2+100 <= mouse[1] <= SCREEN_SIZE[1]/2+140:
                     sys.exit(0)
                 elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
-                    game(screen)
+                    player = [Block() for i in range(INITIAL_NUMBER_OF_BLOCK)]
+                    game(screen, player, randomApplePosition(player), "NORTH")
+                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2 + 40:
+                    player, apple, direction = loadFunc()
+                    game(screen, player, apple, direction)
 
             elif event.type == KEYDOWN:
                 if event.key == K_UP:
@@ -92,8 +125,7 @@ def menu(screen):
 
         pygame.display.flip()
 
-
-def pause(screen, player, apple):
+def pause(screen, player, apple, direction):
     buttonColor = (0, 180, 0)
     selectedButtonColor = (100, 100, 100)
     selected = 0
@@ -122,6 +154,8 @@ def pause(screen, player, apple):
                     sys.exit(0)
                 elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
                     return
+                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2 + 40:
+                    saveFunc(player, apple, direction)
 
         # DRAW APPLE
         pygame.draw.rect(screen, appleColor, pygame.Rect(apple.x, apple.y, STEP[0], STEP[1]))
@@ -220,12 +254,9 @@ def randomApplePosition(player):
     return pos
 
 
-def game(screen):
-    player = [Block() for i in range(INITIAL_NUMBER_OF_BLOCK)]
-    apple = randomApplePosition(player)
+def game(screen, player, apple, direction):
     snakeColor = (0,180,0)
     appleColor = (180,0,0)
-    direction = "NORTH"
     score = 0
     while 1:
         screen.fill(BACKGROUND_COLOR)
@@ -243,7 +274,7 @@ def game(screen):
                 if event.key == K_LEFT:
                     direction = "WEST" if direction != "EAST" else direction
                 if event.key == K_ESCAPE:
-                    pause(screen, player, apple)
+                    pause(screen, player, apple, direction)
 
 
         # DRAW APPLE
