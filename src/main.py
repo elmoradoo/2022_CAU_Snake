@@ -139,6 +139,38 @@ def pause(screen):
         pygame.display.flip()
 
 
+def game_over(screen):
+    buttonColor = (0, 180, 0)
+    selectedButtonColor = (100, 100, 100)
+    selected = 0
+    smallfont = pygame.font.SysFont('Corbel', 35)
+    leave = smallfont.render('QUIT' , True , (255, 255, 255))
+
+    while 1:
+        idx = 0
+        screen.fill(BACKGROUND_COLOR)
+        #drawBackgroundGrid(screen)
+        mouse = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                sys.exit(0)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+
+            #if the mouse is clicked on the
+            # button the game is terminated
+                if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2+100 <= mouse[1] <= SCREEN_SIZE[1]/2+140:
+                    sys.exit(0)
+
+        #QUIT
+        if SCREEN_SIZE[0]/2- 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 + 100 <= mouse[1] <= SCREEN_SIZE[1]/2+140:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 +100, 140, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2+100, 140, 40])
+        screen.blit(leave, (SCREEN_SIZE[0]/2- 30, SCREEN_SIZE[1]/2+110))
+
+        pygame.display.flip()
+
+
 
 def randomApplePosition(player):
     pos = Block()
@@ -179,12 +211,14 @@ def game(screen):
                 if event.key == K_ESCAPE:
                     pause(screen)
 
-        # DRAW SNAKE
-        for i in player:
-            pygame.draw.rect(screen, snakeColor, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
 
         # DRAW APPLE
         pygame.draw.rect(screen, appleColor, pygame.Rect(apple.x, apple.y, STEP[0], STEP[1]))
+
+
+        # DRAW SNAKE
+        for i in player:
+            pygame.draw.rect(screen, snakeColor, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
 
         pygame.display.flip()
         if (direction == "EAST"):
@@ -199,8 +233,20 @@ def game(screen):
         # Gestion apple
         if (player[0].x == apple.x and player[1].y == apple.y):
             score += 1
-            player.append(apple)
+            pos = Block()
+            pos.x = player[len(player) - 1].x
+            pos.y= player[len(player) - 1].y
+            player.append(pos)
             apple = randomApplePosition(player)
+
+        # Gestion game_over edge
+        if (player[0].x < 0 or player[0].x > SCREEN_SIZE[0] or player[0].y < 0 or player[0].y > SCREEN_SIZE[1]):
+            game_over(screen)
+
+        # Gestion game_over snake
+        for i in player[1:]:
+            if (player[0].x == i.x and player[0].y == i.y):
+                game_over(screen)
 
         pygame.time.wait(100)
 
