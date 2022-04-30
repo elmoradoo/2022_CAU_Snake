@@ -1,3 +1,3 @@
 class Block:
-    x = 50
+    x = 60
     y = 500
