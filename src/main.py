@@ -1,7 +1,7 @@
 import pygame
 import sys
 from pygame.locals import *
-from snake import Block
+from snake import Block, Rank
 import random
 
 # SYSTEM
@@ -63,6 +63,27 @@ def loadFunc():
             player.append(tmp)
     return player, apple, direction, score
 
+def getRanking():
+    rank = []
+    with open('save/ranking.txt', 'r') as f:
+        buffer = f.read().split('\n')
+        for i in buffer:
+            tmp = Rank()
+            buff2 = i.split(':')
+            tmp.name = buff2[0]
+            tmp.score = int(buff2[1])
+            rank.append(tmp)
+    return rank
+
+def updateRanking(score):
+    if (len(sys.argv) >= 2):
+        name = sys.argv[1]
+    else:
+        name = "???"
+
+    with open('save/ranking.txt', 'a') as f:
+        f.write("\n" + name + ":" + str(score))
+
 def menu(screen):
     buttonColor = (0, 180, 0)
     selectedButtonColor = (100, 100, 100)
@@ -70,6 +91,7 @@ def menu(screen):
     selected = 0
     smallfont = pygame.font.SysFont('Corbel', 35)
     leave = smallfont.render('QUIT' , True , (255, 255, 255))
+    ranking = smallfont.render('RANKING' , True , (255, 255, 255))
     play = smallfont.render('PLAY' , True , (255, 255, 255))
     load = smallfont.render('LOAD' , True , (255, 255, 255))
     bigfont = pygame.font.SysFont('Corbel', 80)
@@ -87,8 +109,10 @@ def menu(screen):
 
             #if the mouse is clicked on the
             # button the game is terminated
-                if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2+100 <= mouse[1] <= SCREEN_SIZE[1]/2+140:
+                if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2+200 <= mouse[1] <= SCREEN_SIZE[1]/2+240:
                     sys.exit(0)
+                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2+100 <= mouse[1] <= SCREEN_SIZE[1]/2+140:
+                    rankingMenu(screen)
                 elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
                     player = [Block() for i in range(INITIAL_NUMBER_OF_BLOCK)]
                     game(screen, player, randomApplePosition(player), "NORTH", 0)
@@ -96,17 +120,19 @@ def menu(screen):
                     player, apple, direction, score = loadFunc()
                     game(screen, player, apple, direction, score)
 
-            elif event.type == KEYDOWN:
-                if event.key == K_UP:
-                    direction = "NORTH"
-                if event.key == K_DOWN:
-                    direction = "SOUTH"
         #QUIT
+        if SCREEN_SIZE[0]/2- 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 + 200 <= mouse[1] <= SCREEN_SIZE[1]/2+240:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 +200, 140, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2+200, 140, 40])
+        screen.blit(leave, (SCREEN_SIZE[0]/2- 30, SCREEN_SIZE[1]/2+210))
+
+        #RANKING
         if SCREEN_SIZE[0]/2- 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 + 100 <= mouse[1] <= SCREEN_SIZE[1]/2+140:
             pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 +100, 140, 40])
         else:
             pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2+100, 140, 40])
-        screen.blit(leave, (SCREEN_SIZE[0]/2- 30, SCREEN_SIZE[1]/2+110))
+        screen.blit(ranking, (SCREEN_SIZE[0]/2- 55, SCREEN_SIZE[1]/2+110))
 
         #PLAY
         if SCREEN_SIZE[0]/2- 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
@@ -213,10 +239,11 @@ def game_over(screen, score, player, apple):
     smallfont = pygame.font.SysFont('Corbel', 35)
     leave = smallfont.render('QUIT' , True , (255, 255, 255))
     bigfont = pygame.font.SysFont('Corbel', 80)
-    score = bigfont.render('Score: ' + str(score) , True , (255, 255, 255))
+    scoreText = bigfont.render('Score: ' + str(score) , True , (255, 255, 255))
     snakeColor = (0,80,0)
     appleColor = (80,0,0)
 
+    updateRanking(score)
     while 1:
         idx = 0
         screen.fill(BACKGROUND_COLOR)
@@ -248,10 +275,53 @@ def game_over(screen, score, player, apple):
         screen.blit(leave, (SCREEN_SIZE[0]/2- 30, SCREEN_SIZE[1]/2+10))
 
         #SCORE
-        screen.blit(score, (SCREEN_SIZE[0]/2- 110, SCREEN_SIZE[1]/2 - 100))
+        screen.blit(scoreText, (SCREEN_SIZE[0]/2- 110, SCREEN_SIZE[1]/2 - 100))
 
         pygame.display.flip()
 
+
+def rankingMenu(screen):
+    buttonColor = (0, 180, 0)
+    selectedButtonColor = (100, 100, 100)
+    selected = 0
+    smallfont = pygame.font.SysFont('Corbel', 35)
+    back = smallfont.render('MENU' , True , (255, 255, 255))
+    bigfont = pygame.font.SysFont('Corbel', 80)
+    rankingText = bigfont.render('RANKING' , True , (255, 255, 255))
+    rank = getRanking()
+
+    rank.sort(key=lambda x: x.score, reverse=True)
+    while 1:
+        idx = 0
+        screen.fill(BACKGROUND_COLOR)
+        drawBackgroundGrid(screen)
+        mouse = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                sys.exit(0)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+
+            #if the mouse is clicked on the
+            # button the game is terminated
+                if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1]-120 <= mouse[1] <= SCREEN_SIZE[1]- 80:
+                    return
+
+
+        #MENU
+        if SCREEN_SIZE[0]/2- 70 <= mouse[0] <= SCREEN_SIZE[0]/2+70 and SCREEN_SIZE[1] - 120 <= mouse[1] <= SCREEN_SIZE[1] - 80:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1] - 120, 140, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]- 120, 140, 40])
+        screen.blit(back, (SCREEN_SIZE[0]/2- 30, SCREEN_SIZE[1]-110))
+
+        for i in rank[0:5]:
+            nameText = bigfont.render(i.name, True , (255, 255, 255))
+            scoreText = bigfont.render(str(i.score) , True , (255, 255, 255))
+            screen.blit(nameText, (250, 200+ 100*rank.index(i)))
+            screen.blit(scoreText, (SCREEN_SIZE[0] - 250, 200+ 100*rank.index(i)))
+
+        screen.blit(rankingText, (SCREEN_SIZE[0]/2- 130, 80))
+        pygame.display.flip()
 
 
 def randomApplePosition(player):
