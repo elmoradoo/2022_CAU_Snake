@@ -93,15 +93,17 @@ def game(screen, load):
 def twoPlayerGame(screen):
     p1Alive = True
     p2Alive = True
-    player = [Block(60, 500) for i in range(INITIAL_NUMBER_OF_BLOCK)]
-    playerTwo = [Block(120, 500) for i in range(INITIAL_NUMBER_OF_BLOCK)]
+    player = [Block(20, 20) for i in range(INITIAL_NUMBER_OF_BLOCK)]
+    playerTwo = [Block(720, 800)for i in range(INITIAL_NUMBER_OF_BLOCK)]
     apple = randomApplePosition(player)
+    appleColor = (180,0,0)
+    appleTwo = randomApplePosition(player)
+    appleColorTwo = (0,180,180)
     snakeColorTwo = (0,180,180)
-    direction = "NORTH"
-    directionTwo = "SOUTH"
+    direction = "SOUTH"
+    directionTwo = "NORTH"
     score = 0
     snakeColor = (0,180,0)
-    appleColor = (180,0,0)
     smallfont = pygame.font.SysFont('Corbel', 35)
     smallsmallfont = pygame.font.SysFont('Corbel', 25)
     while 1:
@@ -133,6 +135,7 @@ def twoPlayerGame(screen):
 
         # DRAW APPLE
         pygame.draw.rect(screen, appleColor, pygame.Rect(apple.x, apple.y, STEP[0], STEP[1]))
+        pygame.draw.rect(screen, appleColorTwo, pygame.Rect(appleTwo.x, appleTwo.y, STEP[0], STEP[1]))
 
         # DRAW SNAKE
         for i in player:
@@ -181,6 +184,23 @@ def twoPlayerGame(screen):
             pos.y= playerTwo[len(playerTwo) - 1].y
             playerTwo.append(pos)
             apple = randomApplePosition(playerTwo)
+
+                # Gestion apple
+        if (player[0].x == appleTwo.x and player[1].y == appleTwo.y):
+            score += 1
+            pos = Block(60, 500)
+            pos.x = player[len(player) - 1].x
+            pos.y= player[len(player) - 1].y
+            player.append(pos)
+            appleTwo = randomApplePosition(player)
+        
+        if (playerTwo[0].x == appleTwo.x and playerTwo[1].y == appleTwo.y):
+            score += 1
+            pos = Block(60, 500)
+            pos.x = playerTwo[len(playerTwo) - 1].x
+            pos.y= playerTwo[len(playerTwo) - 1].y
+            playerTwo.append(pos)
+            appleTwo = randomApplePosition(playerTwo)
 
         # Gestion game_over edge
         if (player[0].x < 0 or player[0].x > SCREEN_SIZE[0] or player[0].y < 0 or player[0].y > SCREEN_SIZE[1]):
