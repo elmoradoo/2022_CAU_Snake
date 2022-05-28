@@ -102,7 +102,6 @@ def twoPlayerGame(screen):
     snakeColorTwo = (0,180,180)
     direction = "SOUTH"
     directionTwo = "NORTH"
-    score = 0
     snakeColor = (0,180,0)
     smallfont = pygame.font.SysFont('Corbel', 35)
     smallsmallfont = pygame.font.SysFont('Corbel', 25)
@@ -143,12 +142,6 @@ def twoPlayerGame(screen):
         for i in playerTwo:
                 pygame.draw.rect(screen, snakeColorTwo, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
 
-        # DRAW SCORE
-        scoreText = smallfont.render("Score: " + str(score) , True , (255, 255, 255))
-        screen.blit(scoreText, (10, 10))
-        menuText = smallsmallfont.render("You can use escape button to access in game menu" , True , (255, 255, 255))
-        screen.blit(menuText, (180, 770))
-
         pygame.display.flip()
         if (direction == "EAST"):
             setBlockPositions(player, 0, len(player), player[0].x + STEP[0], player[0].y)
@@ -170,7 +163,6 @@ def twoPlayerGame(screen):
 
         # Gestion apple
         if (player[0].x == apple.x and player[1].y == apple.y):
-            score += 1
             pos = Block(60, 500)
             pos.x = player[len(player) - 1].x
             pos.y= player[len(player) - 1].y
@@ -178,7 +170,6 @@ def twoPlayerGame(screen):
             apple = randomApplePosition(player)
         
         if (playerTwo[0].x == apple.x and playerTwo[1].y == apple.y):
-            score += 1
             pos = Block(60, 500)
             pos.x = playerTwo[len(playerTwo) - 1].x
             pos.y= playerTwo[len(playerTwo) - 1].y
@@ -187,7 +178,6 @@ def twoPlayerGame(screen):
 
                 # Gestion apple
         if (player[0].x == appleTwo.x and player[1].y == appleTwo.y):
-            score += 1
             pos = Block(60, 500)
             pos.x = player[len(player) - 1].x
             pos.y= player[len(player) - 1].y
@@ -195,7 +185,6 @@ def twoPlayerGame(screen):
             appleTwo = randomApplePosition(player)
         
         if (playerTwo[0].x == appleTwo.x and playerTwo[1].y == appleTwo.y):
-            score += 1
             pos = Block(60, 500)
             pos.x = playerTwo[len(playerTwo) - 1].x
             pos.y= playerTwo[len(playerTwo) - 1].y
@@ -220,7 +209,7 @@ def twoPlayerGame(screen):
             if (player[0].x == i.x and player[0].y == i.y):
                 p1Alive = False
         if (p1Alive == False or p2Alive == False):
-            return game_over(screen, score, player, apple)
+            return game_over(screen, -1, player, apple)
 
         pygame.time.wait(100)
 
@@ -268,7 +257,8 @@ def game_over(screen, score, player, apple):
         screen.blit(leave, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 10))
 
         #SCORE
-        screen.blit(scoreText, (SCREEN_SIZE[0]/2 - 110, SCREEN_SIZE[1]/2 - 100))
+        if (score != -1):
+            screen.blit(scoreText, (SCREEN_SIZE[0]/2 - 110, SCREEN_SIZE[1]/2 - 100))
 
         #IN GAME MENU
         menuText = smallsmallfont.render("You can use escape button to access in game menu" , True , (255, 255, 255))
