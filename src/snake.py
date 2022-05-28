@@ -1,5 +1,6 @@
 from constants import *
 import user_interface
+import main
 
 def drawBackgroundGrid(screen):
     draws = GAME_SIZE * 2
@@ -16,11 +17,14 @@ def setBlockPositions(snake, index, size, newx, newy):
     snake[index].y = newy
     setBlockPositions(snake, index + 1, size, xold, yold)
 
-def game(screen):
-    player = [Block(60, 500) for i in range(INITIAL_NUMBER_OF_BLOCK)]
-    apple = randomApplePosition(player)
-    direction = "NORTH"
-    score = 0
+def game(screen, load):
+    if (load == 1):
+        player, apple, direction, score = main.loadFunc()
+    else:
+        player = [Block(60, 500) for i in range(INITIAL_NUMBER_OF_BLOCK)]
+        apple = randomApplePosition(player)
+        direction = "NORTH"
+        score = 0
     snakeColor = (0,180,0)
     appleColor = (180,0,0)
     smallfont = pygame.font.SysFont('Corbel', 35)
@@ -70,7 +74,7 @@ def game(screen):
         # Gestion apple
         if (player[0].x == apple.x and player[1].y == apple.y):
             score += 1
-            pos = Block()
+            pos = Block(60, 500)
             pos.x = player[len(player) - 1].x
             pos.y= player[len(player) - 1].y
             player.append(pos)
@@ -124,7 +128,7 @@ def twoPlayerGame(screen):
                     directionTwo = "SOUTH" if directionTwo != "NORTH" else directionTwo
                 if event.key == K_d:
                     directionTwo = "EAST" if directionTwo != "WEST" else directionTwo
-                if event.key == K_q:
+                if event.key == K_a:
                     directionTwo = "WEST" if directionTwo != "EAST" else directionTwo
 
         # DRAW APPLE
@@ -164,7 +168,7 @@ def twoPlayerGame(screen):
         # Gestion apple
         if (player[0].x == apple.x and player[1].y == apple.y):
             score += 1
-            pos = Block()
+            pos = Block(60, 500)
             pos.x = player[len(player) - 1].x
             pos.y= player[len(player) - 1].y
             player.append(pos)
@@ -172,7 +176,7 @@ def twoPlayerGame(screen):
         
         if (playerTwo[0].x == apple.x and playerTwo[1].y == apple.y):
             score += 1
-            pos = Block()
+            pos = Block(60, 500)
             pos.x = playerTwo[len(playerTwo) - 1].x
             pos.y= playerTwo[len(playerTwo) - 1].y
             playerTwo.append(pos)

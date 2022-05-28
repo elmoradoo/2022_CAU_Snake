@@ -40,12 +40,11 @@ def menu(screen):
                 elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 100 <= mouse[1] <= SCREEN_SIZE[1]/2 + 140:
                     rankingMenu(screen)
                 elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
-                    game(screen)
+                    game(screen, 0)
                 elif SCREEN_SIZE[0]/1.5 - 70 <= mouse[0] <= SCREEN_SIZE[0]/1.5 + 70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
                     twoPlayerGame(screen)
                 elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2 + 40:
-                    player, apple, direction, score = main.loadFunc()
-                    game(screen, player, apple, direction, score)
+                    game(screen, 1)
 
         #QUIT
         if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 200 <= mouse[1] <= SCREEN_SIZE[1]/2 + 240:

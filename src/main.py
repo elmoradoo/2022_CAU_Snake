@@ -26,7 +26,7 @@ def saveFunc(player, apple, direction, score):
 
 
 def loadFunc():
-    apple = Block()
+    apple = Block(60, 500)
     player = []
     try:
         with open('save/apple.txt', 'r') as f:
@@ -41,7 +41,7 @@ def loadFunc():
             direction = buffer[0]
             score = int(buffer[1])
             for i in buffer[2:]:
-                tmp = Block()
+                tmp = Block(60, 500)
                 buff2 = i.split(',')
                 tmp.x = int(buff2[0])
                 tmp.y = int(buff2[1])
