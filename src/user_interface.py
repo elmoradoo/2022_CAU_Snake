@@ -102,7 +102,7 @@ def menu(screen):
 
         pygame.display.flip()
 
-def pause(screen, player, apple, direction, score):
+def pause(screen, player, playerTwo, apple, direction, score):
     buttonColor = (0, 180, 0)
     selectedButtonColor = (100, 100, 100)
     selected = 0
@@ -116,6 +116,7 @@ def pause(screen, player, apple, direction, score):
     bigfont = pygame.font.SysFont('Corbel', 80)
     pause = bigfont.render('PAUSE' , True , (255, 255, 255))
     snakeColor = (0,80,0)
+    snakeColorTwo = (0,80,80)
     appleColor = (80,0,0)
 
     while 1:
@@ -151,6 +152,8 @@ def pause(screen, player, apple, direction, score):
         # DRAW SNAKE
         for i in player:
             pygame.draw.rect(screen, snakeColor, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
+        for i in playerTwo:
+            pygame.draw.rect(screen, snakeColorTwo, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
 
         #RESUME
         if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 150 <= mouse[1] <= SCREEN_SIZE[1]/2 - 110:
@@ -233,11 +236,11 @@ def rankingMenu(screen):
             pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]- 120, 140, 40])
         screen.blit(back, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]-110))
 
-        for i in rank[0:5]:
-            nameText = bigfont.render(i.name, True , (255, 255, 255))
-            scoreText = bigfont.render(str(i.score) , True , (255, 255, 255))
-            screen.blit(nameText, (250, 200+ 100*rank.index(i)))
-            screen.blit(scoreText, (SCREEN_SIZE[0] - 250, 200+ 100*rank.index(i)))
+        for i in rank[0:9]:
+            nameText = smallfont.render(i.name, True , (255, 255, 255))
+            scoreText = smallfont.render(str(i.score) , True , (255, 255, 255))
+            screen.blit(nameText, (250, 200+ 50*rank.index(i)))
+            screen.blit(scoreText, (SCREEN_SIZE[0] - 250, 200+ 50*rank.index(i)))
 
         #IN GAME MENU
         menuText = smallsmallfont.render("You can use escape button to access in game menu" , True , (255, 255, 255))
