@@ -15,12 +15,13 @@ def menu(screen):
     selected = 0
     smallfont = pygame.font.SysFont('Corbel', 35)
     smallsmallfont = pygame.font.SysFont('Corbel', 25)
+    bigfont = pygame.font.SysFont('Corbel', 80)
     leave = smallfont.render('QUIT' , True , (255, 255, 255))
     ranking = smallfont.render('RANKING' , True , (255, 255, 255))
-    play = smallfont.render('PLAY' , True , (255, 255, 255))
-    twoPlay = smallfont.render(' 2 PLAYERS' , True , (255, 255, 255))
+    play = smallfont.render('SINGLE PLAY' , True , (255, 255, 255))
+    autoPlay = smallfont.render('AUTO PLAY' , True , (255, 255, 255))
+    dualPlay = smallfont.render('DUAL PLAY' , True , (255, 255, 255))
     load = smallfont.render('LOAD' , True , (255, 255, 255))
-    bigfont = pygame.font.SysFont('Corbel', 80)
     menu = bigfont.render('MENU' , True , (255, 255, 255))
 
     while 1:
@@ -32,61 +33,72 @@ def menu(screen):
             if event.type == QUIT:
                 sys.exit(0)
             elif event.type == pygame.MOUSEBUTTONDOWN:
-
-            #if the mouse is clicked on the
-            # button the game is terminated
-                if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 200 <= mouse[1] <= SCREEN_SIZE[1]/2 + 240:
-                    sys.exit(0)
-                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 100 <= mouse[1] <= SCREEN_SIZE[1]/2 + 140:
-                    rankingMenu(screen)
-                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
+            #if the mouse is clicked on the button the game is terminated
+                if SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 250 <= mouse[1] <= SCREEN_SIZE[1]/2 - 210:
                     game(screen, 0)
-                elif SCREEN_SIZE[0]/1.5 - 70 <= mouse[0] <= SCREEN_SIZE[0]/1.5 + 70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
-                    twoPlayerGame(screen)
-                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2 + 40:
+                elif SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 170 <= mouse[1] <= SCREEN_SIZE[1]/2 - 130:
+                    dualPlayerGame(screen)
+                elif SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 90 <= mouse[1] <= SCREEN_SIZE[1]/2 - 50:
+                    autoPlayGame(screen)
+                elif SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2 + 40:
                     game(screen, 1)
-
-        #QUIT
-        if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 200 <= mouse[1] <= SCREEN_SIZE[1]/2 + 240:
-            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 + 200, 140, 40])
-        else:
-            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2 + 200, 140, 40])
-        screen.blit(leave, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 210))
-
-        #RANKING
-        if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 100 <= mouse[1] <= SCREEN_SIZE[1]/2 + 140:
-            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 +100, 140, 40])
-        else:
-            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2 + 100, 140, 40])
-        screen.blit(ranking, (SCREEN_SIZE[0]/2 - 55, SCREEN_SIZE[1]/2 + 110))
-
-        #PLAY
-        if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
-            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 - 100, 140, 40])
-        else:
-            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 - 100, 140, 40])
-        screen.blit(play, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 - 90))
-
-        # 2 PLAYERS
-        if SCREEN_SIZE[0]/1.5<= mouse[0] <= SCREEN_SIZE[0]/1.5 + 140 and SCREEN_SIZE[1]/2 - 100 <= mouse[1] <= SCREEN_SIZE[1]/2 - 60:
-            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/1.5 ,SCREEN_SIZE[1]/2 - 100, 140, 40])
-        else:
-            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/1.5,SCREEN_SIZE[1]/2 - 100, 140, 40])
-        screen.blit(twoPlay, (SCREEN_SIZE[0]/1.5, SCREEN_SIZE[1]/2 - 90))
-
-        #LOAD
-        if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2 +40:
-            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2, 140, 40])
-        else:
-            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2, 140, 40])
-        screen.blit(load, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 10))
-
-        #IN GAME MENU
-        menuText = smallsmallfont.render("You can use escape button to access in game menu" , True , (255, 255, 255))
-        screen.blit(menuText, (180, 770))
+                elif SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 100 <= mouse[1] <= SCREEN_SIZE[1]/2 + 140:
+                    rankingMenu(screen)
+                elif SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 200 <= mouse[1] <= SCREEN_SIZE[1]/2 + 240:
+                    sys.exit(0)
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    sys.exit(0)
 
         #MENU
-        screen.blit(menu, (SCREEN_SIZE[0]/2 - 80, SCREEN_SIZE[1]/2 - 250))
+        screen.blit(menu, (SCREEN_SIZE[0]/2 - 80, SCREEN_SIZE[1]/2 - 350))
+
+        #SINGLE PLAY
+        if SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 250 <= mouse[1] <= SCREEN_SIZE[1]/2 - 210:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2 - 250, 180, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2 - 250, 180, 40])
+        screen.blit(play, (SCREEN_SIZE[0]/2 - 80, SCREEN_SIZE[1]/2 - 240))
+
+        # DUAL PLAY
+        if SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 170 <= mouse[1] <= SCREEN_SIZE[1]/2 - 130:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2 - 170, 180, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2 - 170, 180, 40])
+        screen.blit(dualPlay, (SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2 - 160))
+
+        #AUTO PLAY
+        if SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 90 <= mouse[1] <= SCREEN_SIZE[1]/2 - 50:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2 - 90, 180, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2 - 90, 180, 40])
+        screen.blit(autoPlay, (SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2 - 80))
+
+        #LOAD
+        if SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2 +40:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2, 180, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2, 180, 40])
+        screen.blit(load, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 10))
+
+        #RANKING
+        if SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 100 <= mouse[1] <= SCREEN_SIZE[1]/2 + 140:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2 +100, 180, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 90, SCREEN_SIZE[1]/2 + 100, 180, 40])
+        screen.blit(ranking, (SCREEN_SIZE[0]/2 - 55, SCREEN_SIZE[1]/2 + 110))
+
+        #QUIT
+        if SCREEN_SIZE[0]/2 - 90 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 200 <= mouse[1] <= SCREEN_SIZE[1]/2 + 240:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 90,SCREEN_SIZE[1]/2 + 200, 180, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 90, SCREEN_SIZE[1]/2 + 200, 180, 40])
+        screen.blit(leave, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 210))
+
+        #IN GAME MENU
+        menuText = smallsmallfont.render("You can use escape button to access in game menu", True, (255, 255, 255))
+        screen.blit(menuText, (180, 770))
+
 
         pygame.display.flip()
 
