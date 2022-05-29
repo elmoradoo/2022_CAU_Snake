@@ -22,7 +22,7 @@ def game(screen, load):
         player, apple, direction, score = main.loadFunc()
     else:
         player = [Block(60, 500) for i in range(INITIAL_NUMBER_OF_BLOCK)]
-        apple = randomApplePosition(player)
+        apple = randomApplePosition(player, [])
         direction = "NORTH"
         score = 0
     snakeColor = (0,180,0)
@@ -45,7 +45,11 @@ def game(screen, load):
                 if event.key == K_LEFT:
                     direction = "WEST" if direction != "EAST" else direction
                 if event.key == K_ESCAPE:
-                    player, apple, direction, score = user_interface.pause(screen, player, apple, direction, score)
+                    if user_interface.pause(screen, player, apple, direction, score):
+                        player = [Block(60, 500) for i in range(INITIAL_NUMBER_OF_BLOCK)]
+                        apple = randomApplePosition(player, [])
+                        direction = "NORTH"
+                        score = 0
 
 
         # DRAW APPLE
@@ -78,7 +82,7 @@ def game(screen, load):
             pos.x = player[len(player) - 1].x
             pos.y= player[len(player) - 1].y
             player.append(pos)
-            apple = randomApplePosition(player)
+            apple = randomApplePosition(player, [])
 
         # Gestion game_over edge
         if (player[0].x < 0 or player[0].x > SCREEN_SIZE[0] or player[0].y < 0 or player[0].y > SCREEN_SIZE[1]):
@@ -95,10 +99,9 @@ def dualPlayerGame(screen):
     p2Alive = True
     player = [Block(20, 20) for i in range(INITIAL_NUMBER_OF_BLOCK)]
     playerTwo = [Block(720, 800)for i in range(INITIAL_NUMBER_OF_BLOCK)]
-    apple = randomApplePosition(player)
+    apple = randomApplePosition(player, playerTwo)
     appleColor = (180,0,0)
-    appleTwo = randomApplePosition(player)
-    appleColorTwo = (0,180,180)
+    appleTwo = randomApplePosition(player, playerTwo)
     snakeColorTwo = (0,180,180)
     direction = "SOUTH"
     directionTwo = "NORTH"
@@ -120,8 +123,6 @@ def dualPlayerGame(screen):
                     direction = "EAST" if direction != "WEST" else direction
                 if event.key == K_LEFT:
                     direction = "WEST" if direction != "EAST" else direction
-                if event.key == K_ESCAPE:
-                    player, apple, direction, score = user_interface.pause(screen, player, apple, direction, score)
 
                 if event.key == K_w:
                     directionTwo = "NORTH" if directionTwo != "SOUTH" else directionTwo
@@ -132,9 +133,18 @@ def dualPlayerGame(screen):
                 if event.key == K_a:
                     directionTwo = "WEST" if directionTwo != "EAST" else directionTwo
 
+                if event.key == K_ESCAPE:
+                    if user_interface.pause(screen, player, apple, direction, -1):
+                        player = [Block(20, 20) for i in range(INITIAL_NUMBER_OF_BLOCK)]
+                        playerTwo = [Block(720, 800)for i in range(INITIAL_NUMBER_OF_BLOCK)]
+                        apple = randomApplePosition(player, playerTwo)
+                        appleTwo = randomApplePosition(player, playerTwo)
+                        direction = "SOUTH"
+                        directionTwo = "NORTH"
+
         # DRAW APPLE
         pygame.draw.rect(screen, appleColor, pygame.Rect(apple.x, apple.y, STEP[0], STEP[1]))
-        pygame.draw.rect(screen, appleColorTwo, pygame.Rect(appleTwo.x, appleTwo.y, STEP[0], STEP[1]))
+        pygame.draw.rect(screen, appleColor, pygame.Rect(appleTwo.x, appleTwo.y, STEP[0], STEP[1]))
 
         # DRAW SNAKE
         for i in player:
@@ -167,14 +177,14 @@ def dualPlayerGame(screen):
             pos.x = player[len(player) - 1].x
             pos.y= player[len(player) - 1].y
             player.append(pos)
-            apple = randomApplePosition(player)
+            apple = randomApplePosition(player, playerTwo)
 
         if (playerTwo[0].x == apple.x and playerTwo[1].y == apple.y):
             pos = Block(60, 500)
             pos.x = playerTwo[len(playerTwo) - 1].x
             pos.y= playerTwo[len(playerTwo) - 1].y
             playerTwo.append(pos)
-            apple = randomApplePosition(playerTwo)
+            apple = randomApplePosition(player, playerTwo)
 
                 # Gestion apple
         if (player[0].x == appleTwo.x and player[1].y == appleTwo.y):
@@ -182,14 +192,14 @@ def dualPlayerGame(screen):
             pos.x = player[len(player) - 1].x
             pos.y= player[len(player) - 1].y
             player.append(pos)
-            appleTwo = randomApplePosition(player)
+            appleTwo = randomApplePosition(player, playerTwo)
 
         if (playerTwo[0].x == appleTwo.x and playerTwo[1].y == appleTwo.y):
             pos = Block(60, 500)
             pos.x = playerTwo[len(playerTwo) - 1].x
             pos.y= playerTwo[len(playerTwo) - 1].y
             playerTwo.append(pos)
-            appleTwo = randomApplePosition(playerTwo)
+            appleTwo = randomApplePosition(player, playerTwo)
 
         # Gestion game_over edge
         if (player[0].x < 0 or player[0].x > SCREEN_SIZE[0] or player[0].y < 0 or player[0].y > SCREEN_SIZE[1]):
@@ -230,7 +240,7 @@ def algo(direction, wrongDir, apple, player):
 
 def autoPlayGame(screen):
     player = [Block(60, 500) for i in range(INITIAL_NUMBER_OF_BLOCK)]
-    apple = randomApplePosition(player)
+    apple = randomApplePosition(player, [])
     direction = "NORTH"
     score = 0
     snakeColor = (0,180,0)
@@ -281,7 +291,7 @@ def autoPlayGame(screen):
             pos.x = player[len(player) - 1].x
             pos.y= player[len(player) - 1].y
             player.append(pos)
-            apple = randomApplePosition(player)
+            apple = randomApplePosition(player, [])
 
         # Gestion game_over edge
         if (player[0].x < 0 or player[0].x > SCREEN_SIZE[0] or player[0].y < 0 or player[0].y > SCREEN_SIZE[1]):
@@ -345,7 +355,7 @@ def game_over(screen, score, player, apple, ia):
 
         pygame.display.flip()
 
-def randomApplePosition(player):
+def randomApplePosition(player, player2):
     pos = Block(60, 500)
     test = False
 
@@ -354,6 +364,9 @@ def randomApplePosition(player):
         pos.x = random.randrange(0, GAME_SIZE, 2) * 10
         pos.y = random.randrange(0, GAME_SIZE, 2) * 10
         for i in player:
+            if (i.x == pos.x and i.y == pos.y):
+                test = False
+        for i in player2:
             if (i.x == pos.x and i.y == pos.y):
                 test = False
     return pos
