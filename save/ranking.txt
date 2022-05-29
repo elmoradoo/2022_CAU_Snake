@@ -47,3 +47,7 @@ pla:0
 pla:0
 pla:1
 pla:0
+aa:0
+aa:2
+aab:1
+aab:1

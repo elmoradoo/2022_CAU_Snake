@@ -102,7 +102,7 @@ def menu(screen):
 
         pygame.display.flip()
 
-def pause(screen, player, apple, direction, score):
+def pause(screen, player, playerTwo, apple, direction, score):
     buttonColor = (0, 180, 0)
     selectedButtonColor = (100, 100, 100)
     selected = 0
@@ -116,6 +116,7 @@ def pause(screen, player, apple, direction, score):
     bigfont = pygame.font.SysFont('Corbel', 80)
     pause = bigfont.render('PAUSE' , True , (255, 255, 255))
     snakeColor = (0,80,0)
+    snakeColorTwo = (0,80,80)
     appleColor = (80,0,0)
 
     while 1:
@@ -130,18 +131,20 @@ def pause(screen, player, apple, direction, score):
 
             #if the mouse is clicked on the
             # button the game is terminated
-                if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 150 <= mouse[1] <= SCREEN_SIZE[1]/2 + 190:
-                    sys.exit(0)
-                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 250 <= mouse[1] <= SCREEN_SIZE[1]/2 + 290:
-                    menu(screen)
-                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 150 <= mouse[1] <= SCREEN_SIZE[1]/2 - 110:
-                    return player, apple, direction, score
+                if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 150 <= mouse[1] <= SCREEN_SIZE[1]/2 - 110:
+                    return False
                 elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 50 <= mouse[1] <= SCREEN_SIZE[1]/2 - 10:
-                    player = [Block() for i in range(INITIAL_NUMBER_OF_BLOCK)]
-                    return player, randomApplePosition(player), "NORTH", 0
-                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2+ 50 <= mouse[1] <= SCREEN_SIZE[1]/2 + 90:
+                    return True
+                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 50 <= mouse[1] <= SCREEN_SIZE[1]/2 + 90:
+                    sys.exit(0)
+                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 150 <= mouse[1] <= SCREEN_SIZE[1]/2 + 190:
+                    menu(screen)
+                elif SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2+ 250 <= mouse[1] <= SCREEN_SIZE[1]/2 + 290 and score != -1:
                     main.saveFunc(player, apple, direction, score)
                     menu(screen)
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    sys.exit(0)
 
         # DRAW APPLE
         pygame.draw.rect(screen, appleColor, pygame.Rect(apple.x, apple.y, STEP[0], STEP[1]))
@@ -149,20 +152,8 @@ def pause(screen, player, apple, direction, score):
         # DRAW SNAKE
         for i in player:
             pygame.draw.rect(screen, snakeColor, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
-
-        #BACK TO MENU
-        if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 250 <= mouse[1] <= SCREEN_SIZE[1]/2 + 290:
-            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 + 250, 140, 40])
-        else:
-            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2 + 250, 140, 40])
-        screen.blit(menuButton, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 260))
-
-        #QUIT
-        if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 150 <= mouse[1] <= SCREEN_SIZE[1]/2 + 190:
-            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 + 150, 140, 40])
-        else:
-            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2 + 150, 140, 40])
-        screen.blit(leave, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 160))
+        for i in playerTwo:
+            pygame.draw.rect(screen, snakeColorTwo, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
 
         #RESUME
         if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 150 <= mouse[1] <= SCREEN_SIZE[1]/2 - 110:
@@ -172,19 +163,34 @@ def pause(screen, player, apple, direction, score):
         screen.blit(resume, (SCREEN_SIZE[0]/2 -50, SCREEN_SIZE[1]/2 - 140))
 
 
-        #SAVE
-        if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2+ 50 <= mouse[1] <= SCREEN_SIZE[1]/2 + 90:
-            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2+ 50, 140, 40])
-        else:
-            pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2+ 50, 140, 40])
-        screen.blit(save, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 60))
-
         #RESTART
         if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 - 50 <= mouse[1] <= SCREEN_SIZE[1]/2 - 10:
             pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 - 50, 140, 40])
         else:
             pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 - 50, 140, 40])
         screen.blit(restart, (SCREEN_SIZE[0]/2 -55, SCREEN_SIZE[1]/2 - 40))
+
+        #QUIT
+        if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 50 <= mouse[1] <= SCREEN_SIZE[1]/2 + 90:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 + 50, 140, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2 + 50, 140, 40])
+        screen.blit(leave, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 60))
+
+        #BACK TO MENU
+        if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 + 150 <= mouse[1] <= SCREEN_SIZE[1]/2 + 190:
+            pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2 + 150, 140, 40])
+        else:
+            pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]/2 + 150, 140, 40])
+        screen.blit(menuButton, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 160))
+
+        #SAVE
+        if score != -1:
+            if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2+ 250 <= mouse[1] <= SCREEN_SIZE[1]/2 + 290:
+                pygame.draw.rect(screen, selectedButtonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2+ 250, 140, 40])
+            else:
+                pygame.draw.rect(screen, buttonColor,[SCREEN_SIZE[0]/2 - 70,SCREEN_SIZE[1]/2+ 250, 140, 40])
+            screen.blit(save, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 260))
 
         #IN GAME MENU
         menuText = smallsmallfont.render("You can use escape button to access in game menu" , True , (255, 255, 255))
@@ -230,11 +236,11 @@ def rankingMenu(screen):
             pygame.draw.rect(screen, buttonColor, [SCREEN_SIZE[0]/2 - 70, SCREEN_SIZE[1]- 120, 140, 40])
         screen.blit(back, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]-110))
 
-        for i in rank[0:5]:
-            nameText = bigfont.render(i.name, True , (255, 255, 255))
-            scoreText = bigfont.render(str(i.score) , True , (255, 255, 255))
-            screen.blit(nameText, (250, 200+ 100*rank.index(i)))
-            screen.blit(scoreText, (SCREEN_SIZE[0] - 250, 200+ 100*rank.index(i)))
+        for i in rank[0:9]:
+            nameText = smallfont.render(i.name, True , (255, 255, 255))
+            scoreText = smallfont.render(str(i.score) , True , (255, 255, 255))
+            screen.blit(nameText, (250, 200+ 50*rank.index(i)))
+            screen.blit(scoreText, (SCREEN_SIZE[0] - 250, 200+ 50*rank.index(i)))
 
         #IN GAME MENU
         menuText = smallsmallfont.render("You can use escape button to access in game menu" , True , (255, 255, 255))
