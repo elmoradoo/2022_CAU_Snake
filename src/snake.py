@@ -82,15 +82,15 @@ def game(screen, load):
 
         # Gestion game_over edge
         if (player[0].x < 0 or player[0].x > SCREEN_SIZE[0] or player[0].y < 0 or player[0].y > SCREEN_SIZE[1]):
-            return game_over(screen, score, player, apple)
+            return game_over(screen, score, player, apple, False)
 
         # Gestion game_over snake
         for i in player[1:]:
             if (player[0].x == i.x and player[0].y == i.y):
-                return game_over(screen, score, player, apple)
+                return game_over(screen, score, player, apple, False)
         pygame.time.wait(100)
 
-def twoPlayerGame(screen):
+def dualPlayerGame(screen):
     p1Alive = True
     p2Alive = True
     player = [Block(20, 20) for i in range(INITIAL_NUMBER_OF_BLOCK)]
@@ -168,7 +168,7 @@ def twoPlayerGame(screen):
             pos.y= player[len(player) - 1].y
             player.append(pos)
             apple = randomApplePosition(player)
-        
+
         if (playerTwo[0].x == apple.x and playerTwo[1].y == apple.y):
             pos = Block(60, 500)
             pos.x = playerTwo[len(playerTwo) - 1].x
@@ -183,7 +183,7 @@ def twoPlayerGame(screen):
             pos.y= player[len(player) - 1].y
             player.append(pos)
             appleTwo = randomApplePosition(player)
-        
+
         if (playerTwo[0].x == appleTwo.x and playerTwo[1].y == appleTwo.y):
             pos = Block(60, 500)
             pos.x = playerTwo[len(playerTwo) - 1].x
@@ -209,11 +209,88 @@ def twoPlayerGame(screen):
             if (player[0].x == i.x and player[0].y == i.y):
                 p1Alive = False
         if (p1Alive == False or p2Alive == False):
-            return game_over(screen, -1, player, apple)
+            return game_over(screen, -1, player, apple, False)
 
         pygame.time.wait(100)
 
-def game_over(screen, score, player, apple):
+def algo(direction, wrongDir, apple, player):
+    if wrongDir != "NORTH" and player[0].y > apple.y:
+        return "NORTH" if direction != "SOUTH" else algo(direction, "NORTH", apple, player)
+    if wrongDir != "SOUTH" and player[0].y < apple.y:
+        return "SOUTH" if direction != "NORTH" else algo(direction, "SOUTH", apple, player)
+    if wrongDir != "EAST" and player[0].x < apple.x:
+        return "EAST" if direction != "WEST" else algo(direction, "EAST", apple, player)
+    if wrongDir != "WEST" and player[0].x > apple.x:
+        return "WEST" if direction != "EAST" else algo(direction, "WEST", apple, player)
+    return direction
+
+
+def autoPlayGame(screen):
+    player = [Block(60, 500) for i in range(INITIAL_NUMBER_OF_BLOCK)]
+    apple = randomApplePosition(player)
+    direction = "NORTH"
+    score = 0
+    snakeColor = (0,180,0)
+    appleColor = (180,0,0)
+    smallfont = pygame.font.SysFont('Corbel', 35)
+    smallsmallfont = pygame.font.SysFont('Corbel', 25)
+    while 1:
+        screen.fill(BACKGROUND_COLOR)
+        drawBackgroundGrid(screen)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                sys.exit(0)
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    return
+
+
+        # DRAW APPLE
+        pygame.draw.rect(screen, appleColor, pygame.Rect(apple.x, apple.y, STEP[0], STEP[1]))
+
+        # DRAW SNAKE
+        for i in player:
+            pygame.draw.rect(screen, snakeColor, pygame.Rect(i.x, i.y, STEP[0], STEP[1]))
+
+        # DRAW SCORE
+        scoreText = smallfont.render("Score: " + str(score) , True , (255, 255, 255))
+        screen.blit(scoreText, (10, 10))
+        menuText = smallsmallfont.render("You can use escape button to go back to the menu" , True , (255, 255, 255))
+        screen.blit(menuText, (180, 770))
+        pygame.display.flip()
+
+        #algo
+        direction = algo(direction, "", apple, player)
+
+        if (direction == "EAST"):
+            setBlockPositions(player, 0, len(player), player[0].x + STEP[0], player[0].y)
+        elif (direction == "NORTH"):
+            setBlockPositions(player, 0, len(player), player[0].x, player[0].y - STEP[1])
+        elif (direction == "SOUTH"):
+            setBlockPositions(player, 0, len(player), player[0].x, player[0].y + STEP[1])
+        elif (direction == "WEST"):
+            setBlockPositions(player, 0, len(player), player[0].x - STEP[0], player[0].y)
+
+        # Gestion apple
+        if (player[0].x == apple.x and player[1].y == apple.y):
+            score += 1
+            pos = Block(60, 500)
+            pos.x = player[len(player) - 1].x
+            pos.y= player[len(player) - 1].y
+            player.append(pos)
+            apple = randomApplePosition(player)
+
+        # Gestion game_over edge
+        if (player[0].x < 0 or player[0].x > SCREEN_SIZE[0] or player[0].y < 0 or player[0].y > SCREEN_SIZE[1]):
+            return game_over(screen, score, player, apple, True)
+
+        # Gestion game_over snake
+        for i in player[1:]:
+            if (player[0].x == i.x and player[0].y == i.y):
+                return game_over(screen, score, player, apple, True)
+        pygame.time.wait(100)
+
+def game_over(screen, score, player, apple, ia):
     buttonColor = (0, 180, 0)
     selectedButtonColor = (100, 100, 100)
     selected = 0
@@ -225,7 +302,8 @@ def game_over(screen, score, player, apple):
     snakeColor = (0,80,0)
     appleColor = (80,0,0)
 
-    updateRanking(score)
+    if ia == False:
+        updateRanking(score)
     while 1:
         idx = 0
         screen.fill(BACKGROUND_COLOR)
@@ -235,9 +313,7 @@ def game_over(screen, score, player, apple):
             if event.type == QUIT:
                 sys.exit(0)
             elif event.type == pygame.MOUSEBUTTONDOWN:
-
-            #if the mouse is clicked on the
-            # button the game is terminated
+            #if the mouse is clicked on the button the game is terminated
                 if SCREEN_SIZE[0]/2 - 70 <= mouse[0] <= SCREEN_SIZE[0]/2 + 70 and SCREEN_SIZE[1]/2 <= mouse[1] <= SCREEN_SIZE[1]/2+40:
                     return
 
