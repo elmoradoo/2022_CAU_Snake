@@ -213,14 +213,17 @@ def dualPlayerGame(screen):
 
         pygame.time.wait(100)
 
+def isGoingToCollide(player, head):
+    return False
+
 def algo(direction, wrongDir, apple, player):
-    if wrongDir != "NORTH" and player[0].y > apple.y:
+    if wrongDir != "NORTH" and player[0].y > apple.y and not isGoingToCollide(player[1:], player[0]):
         return "NORTH" if direction != "SOUTH" else algo(direction, "NORTH", apple, player)
-    if wrongDir != "SOUTH" and player[0].y < apple.y:
+    if wrongDir != "SOUTH" and player[0].y < apple.y and not isGoingToCollide(player[1:], player[0]):
         return "SOUTH" if direction != "NORTH" else algo(direction, "SOUTH", apple, player)
-    if wrongDir != "EAST" and player[0].x < apple.x:
+    if wrongDir != "EAST" and player[0].x < apple.x and not isGoingToCollide(player[1:], player[0]):
         return "EAST" if direction != "WEST" else algo(direction, "EAST", apple, player)
-    if wrongDir != "WEST" and player[0].x > apple.x:
+    if wrongDir != "WEST" and player[0].x > apple.x and not isGoingToCollide(player[1:], player[0]):
         return "WEST" if direction != "EAST" else algo(direction, "WEST", apple, player)
     return direction
 
