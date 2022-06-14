@@ -29,27 +29,29 @@ def game(screen, load):
     appleColor = (180,0,0)
     smallfont = pygame.font.SysFont('Corbel', 35)
     smallsmallfont = pygame.font.SysFont('Corbel', 25)
+    waiting = False;
     while 1:
         screen.fill(BACKGROUND_COLOR)
         drawBackgroundGrid(screen)
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit(0)
-            elif event.type == KEYDOWN:
+            elif event.type == KEYDOWN and not waiting:
                 if event.key == K_UP:
                     direction = "NORTH" if direction != "SOUTH" else direction
-                if event.key == K_DOWN:
+                elif event.key == K_DOWN:
                     direction = "SOUTH" if direction != "NORTH" else direction
-                if event.key == K_RIGHT:
+                elif event.key == K_RIGHT:
                     direction = "EAST" if direction != "WEST" else direction
-                if event.key == K_LEFT:
+                elif event.key == K_LEFT:
                     direction = "WEST" if direction != "EAST" else direction
-                if event.key == K_ESCAPE:
+                elif event.key == K_ESCAPE:
                     if user_interface.pause(screen, player, [], apple, direction, score):
                         player = [Block(60, 500) for i in range(INITIAL_NUMBER_OF_BLOCK)]
                         apple = randomApplePosition(player, [])
                         direction = "NORTH"
                         score = 0
+                waiting = True;
 
 
         # DRAW APPLE
@@ -68,15 +70,19 @@ def game(screen, load):
         pygame.display.flip()
         if (direction == "EAST"):
             setBlockPositions(player, 0, len(player), player[0].x + STEP[0], player[0].y)
+            waiting = False;
         elif (direction == "NORTH"):
             setBlockPositions(player, 0, len(player), player[0].x, player[0].y - STEP[1])
+            waiting = False;
         elif (direction == "SOUTH"):
             setBlockPositions(player, 0, len(player), player[0].x, player[0].y + STEP[1])
+            waiting = False;
         elif (direction == "WEST"):
             setBlockPositions(player, 0, len(player), player[0].x - STEP[0], player[0].y)
+            waiting = False;
 
         # Gestion apple
-        if (player[0].x == apple.x and player[1].y == apple.y):
+        if (player[0].x == apple.x and player[0].y == apple.y):
             score += 1
             pos = Block(60, 500)
             pos.x = player[len(player) - 1].x
