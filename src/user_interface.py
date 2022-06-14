@@ -205,7 +205,7 @@ def rankingMenu(screen):
     buttonColor = (0, 180, 0)
     selectedButtonColor = (100, 100, 100)
     selected = 0
-    smallfont = pygame.font.SysFont('Corbel', 35)
+    smallfont = pygame.font.SysFont('arialunicode', 20)
     smallsmallfont = pygame.font.SysFont('Corbel', 25)
     back = smallfont.render('MENU' , True , (255, 255, 255))
     bigfont = pygame.font.SysFont('Corbel', 80)
