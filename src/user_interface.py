@@ -193,7 +193,7 @@ def pause(screen, player, playerTwo, apple, direction, score):
             screen.blit(save, (SCREEN_SIZE[0]/2 - 30, SCREEN_SIZE[1]/2 + 260))
 
         #IN GAME MENU
-        menuText = smallsmallfont.render("You can use escape button to access in game menu" , True , (255, 255, 255))
+        menuText = smallsmallfont.render("You can use escape button to quit the game" , True , (255, 255, 255))
         screen.blit(menuText, (180, 770))
 
         #PAUSE
